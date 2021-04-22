@@ -2,6 +2,7 @@
 
 - Playfair
 - Vigenere
+- Des
 
  ## 运行
 
