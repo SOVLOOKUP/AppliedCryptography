@@ -1,3 +1,6 @@
+from des.des import desEncoded_ECB, desDecoded_ECB
+
+
 def prepare(text, key):
     text = "".join(text.split())  # to remove white spaces
     alphabetAndKey = key + list("abcdefghiklmnonpqrstuvwxyz")
@@ -9,13 +12,13 @@ def prepare(text, key):
             if x == "i" or x == "j":
                 x = "i"
             oneDmatrix.append(x)
-    #print(oneDmatrix)
+    # print(oneDmatrix)
 
     # transform to two dimensional matrix, with each row 5 elements
     n = 5
     # global twoDmatrix
     twoDmatrix = [oneDmatrix[i:i + 5] for i in range(0, len(oneDmatrix), n)]
-    #print(twoDmatrix)
+    # print(twoDmatrix)
 
     # separate the plaintext into blocks of size 2:
     n = 2
@@ -32,18 +35,20 @@ def prepare(text, key):
         else:
             plain.append(list(text[i:i + n]))
             i += 2
-    #print(plain)
+    # print(plain)
     print(twoDmatrix)
     return twoDmatrix, plain
 
-def playfair(operation:str):
+
+def playfair(operation: str):
     key = list(input("Enter you key: "))
     result = ""
     if operation == '加密':
         text = input("Enter your PlainText: ").strip()
         text = "".join(text.split())  # to remove white spaces
         # create the matrix and split the plain text into blocks
-        twoDmatrix, plain = prepare(text, key) # creates two global variables: twoDmatrix, and plain
+        # creates two global variables: twoDmatrix, and plain
+        twoDmatrix, plain = prepare(text, key)
         # encipher the text
         for i in range(len(plain)):
             for j in range(len(twoDmatrix)):
@@ -53,10 +58,12 @@ def playfair(operation:str):
                 if twoDmatrix[j].count(plain[i][1]) == 1:
                     row2 = j
                     col2 = twoDmatrix[j].index(plain[i][1])
-            if row1 == row2: # shift left
-                result += twoDmatrix[row1][(col1+1)%5] + twoDmatrix[row2][(col2+1)%5]
-            elif col1 == col2: # shift down
-                result += twoDmatrix[(row1+1)%5][col1] + twoDmatrix[(row2+1)%5][col2]
+            if row1 == row2:  # shift left
+                result += twoDmatrix[row1][(col1+1) %
+                                           5] + twoDmatrix[row2][(col2+1) % 5]
+            elif col1 == col2:  # shift down
+                result += twoDmatrix[(row1+1) % 5][col1] + \
+                    twoDmatrix[(row2+1) % 5][col2]
             else:
                 result += twoDmatrix[row1][col2] + twoDmatrix[row2][col1]
     elif operation == '解密':
@@ -71,9 +78,9 @@ def playfair(operation:str):
                 if twoDmatrix[j].count(plain[i][1]) == 1:
                     row2 = j
                     col2 = twoDmatrix[j].index(plain[i][1])
-            if row1 == row2: # shift right
+            if row1 == row2:  # shift right
                 result += twoDmatrix[row1][col1-1] + twoDmatrix[row2][col2-1]
-            elif col1 == col2: # shift up
+            elif col1 == col2:  # shift up
                 result += twoDmatrix[row1-1][col1] + twoDmatrix[row2-1][col2]
             else:
                 result += twoDmatrix[row1][col2] + twoDmatrix[row2][col1]
@@ -135,10 +142,12 @@ class Vigenere:
 
         return plaintext
 
+
 def askWithKey() -> str:
     return input("你的密钥🔐️是？")
 
-def default(operator:str, encode , decode):
+
+def default(operator: str, encode, decode):
     if operator == "加密":
         a = encode(input("需要加密的字符串:"))
         print("\033[1;32m加密结果:\033[0m")
@@ -148,24 +157,41 @@ def default(operator:str, encode , decode):
         print("\033[1;32m解密结果:\033[0m")
         print(a)
 
-def playfairFunc(operator:str):
+
+def playfairFunc(operator: str):
     playfair(operator)
 
-def vigenereFunc(operator:str):
-    v = Vigenere(askWithKey())
+
+def vigenereFunc(operator: str):
+    key = askWithKey()
     default(operator, v.encode, v.decode)
 
-CipherDict = {
-    "playfair":playfairFunc,
-    "vigenere":vigenereFunc
-    }
 
-OperatorList = ["加密","解密"]
+def desFunc(operator: str):
+    key = askWithKey()
+
+    def encode(m):
+        desEncoded_ECB(m, key, True)
+
+    def decode(m):
+        desDecoded_ECB(m, key, True)
+
+    default(operator, encode, decode)
+
+
+CipherDict = {
+    "playfair": playfairFunc,
+    "vigenere": vigenereFunc,
+    "des": desFunc
+}
+
+OperatorList = ["加密", "解密"]
+
 
 def main():
     for k in CipherDict.keys():
         print(k)
-    
+
     name = input("\033[1;34m请选择以上⬆️加密算法的一种：️\033[0m")
 
     for k in CipherDict.keys():
@@ -173,14 +199,14 @@ def main():
             print(f"\033[1;34m你选择的是： \033[1;32m{k}\033[0m \033[1;34m算法\033[0m")
             i = 0
             for o in OperatorList:
-                print(i,o)
+                print(i, o)
                 i += 1
             index = input("\033[1;34m请选择以上⬆️操作的一种,输入序号：️\033[0m")
             CipherDict[k](OperatorList[int(index)])
             return
-    
+
     print("\033[1;31m输入不合法！\n\033[0m")
     main()
 
-main()
 
+main()
