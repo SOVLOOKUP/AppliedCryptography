@@ -164,6 +164,7 @@ def playfairFunc(operator: str):
 
 def vigenereFunc(operator: str):
     key = askWithKey()
+    v = Vigenere(key)
     default(operator, v.encode, v.decode)
 
 
