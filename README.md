@@ -3,6 +3,7 @@
 - Playfair
 - Vigenere
 - Des
+- 凯撒
 
  ## 运行
 
