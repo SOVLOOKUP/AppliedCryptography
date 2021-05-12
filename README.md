@@ -4,10 +4,13 @@
 - Vigenere
 - Des
 - 凯撒
+- otp
 
  ## 运行
 
 `python main.py`
+
+`python otp.py`
 
 
 
